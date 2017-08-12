@@ -2,6 +2,7 @@
 本仓库项目为manager rest, 覆盖原manager路径"/opt/manager/"下对应文件, 如:
 ```
 cp -rf env/* /opt/manager/env/
+chown -R cfyuser:cfyuser /opt/manager
 ```
 ### nginx
 a. 修改配置文件/etc/nginx/conf.d/rest-location.cloudify，增加API路由
