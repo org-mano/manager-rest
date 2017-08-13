@@ -123,3 +123,12 @@ curl -X POST -H "Content-Type: application/json" -H "tenant: default_tenant" -u 
     "jobid": "1"
 }' "http://10.128.3.31/v1/vnfs/eventnotification"
 ```
+
+4 python client test
+import requests
+from requests.auth import HTTPBasicAuth
+headers = {'Tenant': 'default_tenant', 'Content-Type':'application/json'}
+url = 'http://10.20.0.20:80/api/v3/blueprints/myos/update?active=true&vendor=zte'
+resp = requests.put(url, auth=HTTPBasicAuth('admin', 'admin'), headers=headers)
+print(resp.text)
+
