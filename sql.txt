@@ -1,0 +1,12 @@
+# connect to postgres
+su - postgres
+psql
+psql -h 10.20.0.14 cloudify_db cloudify
+
+# quit from psql
+\q
+
+
+# add two columns for table blueprint: active, vendor
+alter table public.blueprints ADD COLUMN active boolean;
+alter table public.blueprints ADD COLUMN vendor text;
