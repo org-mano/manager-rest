@@ -5,27 +5,9 @@ cp -rf env/* /opt/manager/env/
 chown -R cfyuser:cfyuser /opt/manager
 ```
 ### nginx
-a. 修改配置文件/etc/nginx/conf.d/rest-location.cloudify，增加API路由
+a. 修改配置文件/etc/nginx/conf.d/rest-location.cloudify，更新API路由
 ```
-location ~ ^/v1/resource/grant {
-    proxy_pass         http://cloudify-rest;
-    proxy_redirect     off;
-
-    proxy_set_header   Host             $host;
-    proxy_set_header   X-Real-IP        $remote_addr;
-    proxy_set_header   X-Server-Port    $server_port;
-    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-}
-location ~ ^/v1/vnfs/lifecyclechangesnotification {
-    proxy_pass         http://cloudify-rest;
-    proxy_redirect     off;
-
-    proxy_set_header   Host             $host;
-    proxy_set_header   X-Real-IP        $remote_addr;
-    proxy_set_header   X-Server-Port    $server_port;
-    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-}
-location ~ ^/v1/vnfs/eventnotification {
+location ~ ^/api/v(1|2|2\.1|3)/(resource|vnfs|blueprints|executions|deployments|nodes|events|search|status|provider|node-instances|version|evaluate|deployment-modifications|tokens|plugins|snapshots|maintenance|deployment-updates|tenants|user-groups|users|cluster|file-server-auth|ldap|secrets) {
     proxy_pass         http://cloudify-rest;
     proxy_redirect     off;
 
@@ -39,14 +21,8 @@ b. 重启nginx
 ```
 systemctl restart nginx.service
 ```
-### 系统环境
-a. log文件
-```
-touch /var/log/rest_api.log
-chmod 777 /var/log/rest_api.log
-```
 ### 调试命令
-1、PUT "/v1/resource/grant"
+1、PUT "/api/v3/resource/grant"
 ```
 curl -X PUT -H "Content-Type: application/json" -H "tenant: default_tenant" -u admin:admin -d '
 {
@@ -67,9 +43,9 @@ curl -X PUT -H "Content-Type: application/json" -H "tenant: default_tenant" -u a
             "vmnumber": "3"
         }
     ]
-}' "http://10.128.3.31/v1/resource/grant"
+}' "http://10.128.3.31/api/v3/resource/grant"
 ```
-2、POST "/v1/vnfs/lifecyclechangesnotification"
+2、POST "/api/v3/vnfs/lifecyclechangesnotification"
 ```
 curl -X POST -H "Content-Type: application/json" -H "tenant: default_tenant" -u admin:admin -d '
 {
@@ -109,9 +85,9 @@ curl -X POST -H "Content-Type: application/json" -H "tenant: default_tenant" -u 
             ]
         }
     ]
-}' "http://10.128.3.31/v1/vnfs/lifecyclechangesnotification"
+}' "http://10.128.3.31/api/v3/vnfs/lifecyclechangesnotification"
 ```
-3、POST "/v1/vnfs/eventnotification"
+3、POST "/api/v3/vnfs/eventnotification"
 ```
 curl -X POST -H "Content-Type: application/json" -H "tenant: default_tenant" -u admin:admin -d '
 {
@@ -121,14 +97,21 @@ curl -X POST -H "Content-Type: application/json" -H "tenant: default_tenant" -u 
     "eventtype": "2",
     "eventdescription": "This is an important event",
     "jobid": "1"
-}' "http://10.128.3.31/v1/vnfs/eventnotification"
+}' "http://10.128.3.31/api/v3/vnfs/eventnotification"
 ```
 
-4 python client test
+4、python client test
+PUT "/api/v3/blueprints/<$blueprint_id>/update?active=<$active>&vendor=<$vendor>"
+```
 import requests
 from requests.auth import HTTPBasicAuth
 headers = {'Tenant': 'default_tenant', 'Content-Type':'application/json'}
 url = 'http://10.20.0.20:80/api/v3/blueprints/myos/update?active=true&vendor=zte'
 resp = requests.put(url, auth=HTTPBasicAuth('admin', 'admin'), headers=headers)
 print(resp.text)
+```
+or
+```
+curl -X PUT -H "Content-Type: application/json" -H "tenant: default_tenant" -u admin:admin "http://10.128.3.31/api/v3/blueprints/myos/update?active=true&vendor=zte"
+```
 
