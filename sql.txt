@@ -10,3 +10,6 @@ psql -h 10.20.0.14 cloudify_db cloudify
 # add two columns for table blueprint: active, vendor
 alter table public.blueprints ADD COLUMN active boolean;
 alter table public.blueprints ADD COLUMN vendor text;
+
+CREATE TABLE public.inst (name text COLLATE pg_catalog."default", type text COLLATE pg_catalog."default", description text COLLATE pg_catalog."default",    created_at timestamp without time zone, _tenant_id integer, _creator_id integer);
+
