@@ -13,3 +13,12 @@ alter table public.blueprints ADD COLUMN vendor text;
 
 CREATE TABLE public.inst (name text COLLATE pg_catalog."default", type text COLLATE pg_catalog."default", description text COLLATE pg_catalog."default",    created_at timestamp without time zone, _tenant_id integer, _creator_id integer);
 
+CREATE TABLE public.vim (name text COLLATE pg_catalog."default" NOT NULL, type text COLLATE pg_catalog."default", param text COLLATE pg_catalog."default", status text COLLATE pg_catalog."default", _tenant_id integer, _creator_id integer, id text COLLATE pg_catalog."default",     private_resource boolean, _storage_id integer NOT NULL DEFAULT nextval('vims__storage_id_seq'::regclass), CONSTRAINT vims_pkey PRIMARY KEY (_storage_id) );
+
+CREATE SEQUENCE public.vnf_pkgs__storage_id_seq INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1;
+
+CREATE TABLE public.vnf_pkgs (name text, status text COLLATE pg_catalog."default", img_url text, is_active boolean DEFAULT false, _tenant_id integer, _creator_id integer, id text COLLATE pg_catalog."default",  private_resource boolean, _storage_id integer NOT NULL DEFAULT nextval('vnf_pkgs__storage_id_seq'::regclass, created_at timestamp without time zone), CONSTRAINT vnf_pkg_pkey PRIMARY KEY (_storage_id), created_at timestamp without time zone );
+
+CREATE SEQUENCE public.vnf_imgs__storage_id_seq INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1;
+
+CREATE TABLE public.vnf_imgs (name text COLLATE pg_catalog."default", status text COLLATE pg_catalog."default", img_url text, vnf_pkg_id text, vim_id text, _tenant_id integer, _creator_id integer, id text COLLATE pg_catalog."default",  private_resource boolean, _storage_id integer NOT NULL DEFAULT nextval('vnf_imgs__storage_id_seq'::regclass), CONSTRAINT vnf_img_pkey PRIMARY KEY (_storage_id), created_at timestamp without time zone );
