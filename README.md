@@ -115,3 +115,11 @@ or
 curl -X PUT -H "Content-Type: application/json" -H "tenant: default_tenant" -u admin:admin "http://10.128.3.31/api/v3/blueprints/myos/update?active=true&vendor=zte"
 ```
 
+5、install new package on CentOS 7
+yum install python-devel
+/opt/manager/env/bin/pip install demjson
+/opt/manager/env/bin/pip install python-glanceclient
+/opt/manager/env/bin/pip install python-novaclient
+/opt/manager/env/bin/pip install python-keystoneclient
+/opt/manager/env/bin/pip install keystoneauth1
+
